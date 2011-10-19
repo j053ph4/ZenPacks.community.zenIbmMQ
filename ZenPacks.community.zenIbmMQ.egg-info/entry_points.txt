@@ -1,0 +1,3 @@
+[zenoss.zenpacks]
+ZenPacks.community.zenIbmMQ = ZenPacks.community.zenIbmMQ
+
