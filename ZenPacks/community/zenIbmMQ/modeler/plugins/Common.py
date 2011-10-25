@@ -124,15 +124,19 @@ class Common():
         dataDict = {}
         resultlines = input.split("\n")
         manager = ''
+        addLine=False
         for line in resultlines:
             if re.search("QueueManager ",line) != None: # new manager
                 manager = line[len("QueueManager "):len(line)]
                 dataDict[manager] = []
+                addLine=True
             elif re.search("QMNAME",line) != None: # parsing output of dspmq
                 manager = line[line.find("(")+1:line.find(")")]
                 dataDict[manager] = []
                 line = re.sub(' +','  ',line)
-            dataDict[manager].append(line)
+                addLine=True
+            if addLine == True:
+                dataDict[manager].append(line)          
         return dataDict
     
     def windowsDictionary(self,input,device,user,password,bundleKey):

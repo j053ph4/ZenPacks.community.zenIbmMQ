@@ -116,7 +116,6 @@ ${here/channelName}
 </property>
 <property type="string" id="commandTemplate" mode="w" >
 /usr/bin/printf "DISPLAY CHSTATUS(${here/channelName}) ALL\nEND\n" | /opt/zenoss/bin/winexe -U "${here/zWinUser}%${here/zWinPassword}" //${dev/id} "runmqsc ${here/channelManager}"
-
 </property>
 <property type="int" id="cycletime" mode="w" >
 300
@@ -663,7 +662,6 @@ ${here/queueName}
 </property>
 <property type="string" id="commandTemplate" mode="w" >
 /usr/bin/printf "DISPLAY QUEUE(${here/queueName}) ALL\nEND\n" | /opt/zenoss/bin/winexe -U "${here/zWinUser}%${here/zWinPassword}" //${dev/id} "runmqsc ${here/queueManager}"
-
 </property>
 <property type="int" id="cycletime" mode="w" >
 300
@@ -993,7 +991,6 @@ ${here/channelName}
 </property>
 <property type="string" id="commandTemplate" mode="w" >
 /usr/bin/printf "DISPLAY CHSTATUS(${here/channelName}) ALL\nEND\n" | /opt/zenoss/bin/winexe -U "${here/zWinUser}%${here/zWinPassword}" //${dev/id} "runmqsc ${here/channelManager}"
-
 </property>
 <property type="int" id="cycletime" mode="w" >
 300
@@ -1522,7 +1519,6 @@ ${here/queueName}
 </property>
 <property type="string" id="commandTemplate" mode="w" >
 /usr/bin/printf "DISPLAY QUEUE(${here/queueName}) ALL\nEND\n" | /opt/zenoss/bin/winexe -U "${here/zWinUser}%${here/zWinPassword}" //${dev/id} "runmqsc ${here/queueManager}"
-
 </property>
 <property type="int" id="cycletime" mode="w" >
 300
