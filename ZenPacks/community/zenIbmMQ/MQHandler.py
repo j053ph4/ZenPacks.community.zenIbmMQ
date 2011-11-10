@@ -1,4 +1,4 @@
-import sys, os, re, pexpect
+import sys, os, re
 import Globals
 from optparse import OptionParser
 from Products.ZenUtils.ZenScriptBase import ZenScriptBase
