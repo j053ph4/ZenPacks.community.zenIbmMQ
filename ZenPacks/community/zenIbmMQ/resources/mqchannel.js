@@ -27,6 +27,7 @@ ZC.MQChannelPanel = Ext.extend(ZC.ComponentGridPanel, {
                 {name: 'channelConn'},
                 {name: 'channelStatus'},
                 {name: 'channelManager'},
+                {name: 'usesMonitorAttribute'},
                 {name: 'monitor'},
                 {name: 'monitored'},
                 {name: 'locking'}

@@ -27,6 +27,7 @@ ZC.MQQueuePanel = Ext.extend(ZC.ComponentGridPanel, {
                 {name: 'queueType'},
                 {name: 'queueManager'},
                 {name: 'queueMaxDepth'},
+                {name: 'usesMonitorAttribute'},
                 {name: 'monitor'},
                 {name: 'monitored'},
                 {name: 'locking'}
