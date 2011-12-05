@@ -65,11 +65,6 @@ class MQChannel(DeviceComponent, ManagedEntity):
         """
         return self.mqDevice()
     
-    def monitored(self):
-        """ 
-        """
-        return True
-    
     def getStatus(self):
         """ 
         """
@@ -85,5 +80,12 @@ class MQChannel(DeviceComponent, ManagedEntity):
         else:
             self.status = -1
         return self.status
-
+    
+    def manage_deleteComponent(self, REQUEST=None):
+        url = None
+        if REQUEST is not None:
+            url = self.device().mqChannels.absolute_url()
+        self.getPrimaryParent()._delObject(self.id)
+        if REQUEST is not None:
+            REQUEST['RESPONSE'].redirect(url)
     

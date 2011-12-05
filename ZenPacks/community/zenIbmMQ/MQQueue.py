@@ -74,10 +74,12 @@ class MQQueue(DeviceComponent, ManagedEntity):
         """
         return self.mqDevice()
     
-    def monitored(self):
-        """ 
-        """
-        return True
-
+    def manage_deleteComponent(self, REQUEST=None):
+        url = None
+        if REQUEST is not None:
+            url = self.device().mqQueues.absolute_url()
+        self.getPrimaryParent()._delObject(self.id)
+        if REQUEST is not None:
+            REQUEST['RESPONSE'].redirect(url)
 
     

@@ -11,7 +11,7 @@ class MQManager(DeviceComponent, ManagedEntity):
     meta_type = portal_type = "MQManager"
 
     managerName = ''
-    managerStatus = ''
+    managerStatus = 'Stopped'
     status = 1
 
     _properties = ManagedEntity._properties + (
@@ -68,11 +68,6 @@ class MQManager(DeviceComponent, ManagedEntity):
         """ 
         """
         return self.mqDevice()
-    
-    def monitored(self):
-        """ 
-        """
-        return True
 
     def statusMap(self):
         """ map run state to zenoss status
@@ -96,3 +91,10 @@ class MQManager(DeviceComponent, ManagedEntity):
             datapoint = 'mgr-status-win_status'
         return int(self.cacheRRDValue(datapoint,0))
     
+    def manage_deleteComponent(self, REQUEST=None):
+        url = None
+        if REQUEST is not None:
+            url = self.device().mqManagers.absolute_url()
+        self.getPrimaryParent()._delObject(self.id)
+        if REQUEST is not None:
+            REQUEST['RESPONSE'].redirect(url)
