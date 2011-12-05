@@ -65,7 +65,7 @@ class Common():
         name = dataDict['QMNAME']
         info['id'] = prepId(name)
         info['managerName'] = name
-        info['managerStatus'] = dataDict['STATUS']
+        #info['managerStatus'] = dataDict['STATUS']
         return info
     
     def QueueInfo(self,manager,dataDict):
