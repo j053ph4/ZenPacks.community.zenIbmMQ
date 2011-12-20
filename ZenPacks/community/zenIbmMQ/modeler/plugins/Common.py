@@ -39,7 +39,10 @@ class MQComponentMap():
         else:
             self.bundleKey,output = results
             dataDict = common.windowsDictionary(output,device.id,device.zWinUser,device.zWinPassword,self.bundleKey)
-
+        
+        log.info("Data items returned: %s" % len(dataDict))
+        for key in dataDict.keys():
+            log.info("Data items returned for dict %s: %s" % (key,len(dataDict[key])))
         objects = common.parseResults(self.bundleKey,dataDict)
         rm = self.relMap()
         log.info('Found %s components of type %s' %(len(objects),self.bundleKey))
@@ -72,21 +75,24 @@ class Common():
         """ Map MQ data to component attributes
         """
         info = {}
-        name = dataDict['QUEUE']
+        name = dataDict['QUEUE']+'_'+manager
+        name = re.sub('[^A-Za-z0-9]+', '', name)
         info['id'] = prepId(name)
-        info['queueName'] = name
+        info['queueName'] = dataDict['QUEUE']
         info['queueManager'] = manager
         info['queueType'] = dataDict['TYPE']
         info['queueMaxDepth'] = dataDict['MAXDEPTH']
+        #print info
         return info
     
     def ChannelInfo(self,manager,dataDict):
         """ Map MQ data to component attributes
         """
         info = {}
-        name = dataDict['CHANNEL']
+        name = dataDict['CHANNEL']+'_'+manager
+        name = re.sub('[^A-Za-z0-9]+', '', name)
         info['id'] = prepId(name)
-        info['channelName'] = name
+        info['channelName'] = dataDict['CHANNEL']
         info['channelConn'] = dataDict['CONNAME']
         info['channelType'] = dataDict['CHLTYPE']
         info['channelStatus'] = dataDict['STATUS']
@@ -96,23 +102,31 @@ class Common():
     def parseBundle(self,manager,bundles,bundleKey):
         """ return dictionary objects for components
         """
+        print "parseBundle manager %s key %s bundles: %s" % (manager,bundleKey,len(bundles))
+        
         output = []
         for bundle in bundles:
+            #print "bundle lines %s" % len(bundle)
             self.parser.lines = bundle
+            self.parser.info = {}
             self.parser.dataMap()
+            #print "datamap items %s" % len(self.parser.info.items())
             try:
                 test = self.parser.info[bundleKey]
-                if re.search('CHANNEL',bundleKey) != None:
+                if bundleKey == 'CHANNEL':
                     if re.search('SYSTEM',test) == None:
                         output.append(self.ChannelInfo(manager,self.parser.info))
-                elif re.search('QUEUE',bundleKey) != None:
+                if bundleKey == 'QUEUE':      
+                    ignoreFlag = False
                     if re.search('SYSTEM',test) != None:
-                        pass
-                    elif re.search('COM.IBM.MQ.PCF',test) != None:
-                        pass
-                    else:
+                        ignoreFlag = True
+                    if re.search('COM.IBM.MQ.PCF',test) != None:
+                        ignoreFlag = True
+                    if re.search('DEAD.LETTER',test) != None:
+                        ignoreFlag = True
+                    if ignoreFlag == False:
                         output.append(self.QueueInfo(manager,self.parser.info))
-                elif re.search('QMNAME',bundleKey) != None:
+                if bundleKey == 'QMNAME':          
                     output.append(self.ManagerInfo(self.parser.info))
             except:
                 pass
@@ -130,13 +144,13 @@ class Common():
                 manager = line[len("QueueManager "):len(line)]
                 dataDict[manager] = []
                 addLine=True
-            elif re.search("QMNAME",line) != None: # parsing output of dspmq
+            elif re.search("^QMNAME",line) != None: # parsing output of dspmq
                 manager = line[line.find("(")+1:line.find(")")]
                 dataDict[manager] = []
                 line = re.sub(' +','  ',line)
                 addLine=True
             if addLine == True:
-                dataDict[manager].append(line)          
+                dataDict[manager].append(line)
         return dataDict
     
     def windowsDictionary(self,input,device,user,password,bundleKey):
@@ -154,22 +168,25 @@ class Common():
     def parseResults(self,bundleKey,dataDict):
         """
         """
+        #print "parseResults key %s dict: %s" % (bundleKey,len(dataDict.items()))
         beginString = "QueueManager "
         endString = "All valid MQSC commands were processed"
         midString = ''
         objects = []
-        if re.search('CHANNEL',bundleKey) != None:
-            midString = "AMQ8417"
-        elif re.search('QUEUE',bundleKey) != None:
-            midString = "AMQ8409"
-        elif re.search('QMNAME',bundleKey) != None:
+        if bundleKey == 'QMNAME': 
             for manager,list in dataDict.items():
-                objects += self.parseBundle(manager,[list],bundleKey)
+                objects = objects + self.parseBundle(manager,[list],bundleKey)
             return objects
-        for manager,list in dataDict.items():
-            bundles = self.parser.bundleData(list,beginString,midString,endString) 
-            objects += self.parseBundle(manager,bundles,bundleKey)  
-        return objects
+        else:
+            midString = "BLAHBLAH"
+            if bundleKey == 'CHANNEL':
+                midString = "AMQ8417"
+            elif bundleKey == 'QUEUE':    
+                midString = "AMQ8409"
+            for manager,list in dataDict.items():
+                bundles = self.parser.bundleData(list,beginString,midString,endString)
+                objects = objects + self.parseBundle(manager,bundles,bundleKey)  
+            return objects
 
 
 class WindowsCommon():
@@ -189,7 +206,6 @@ class WindowsCommon():
         """ retrieve list of queue managers
         """
         localCommand = 'echo | /opt/zenoss/bin/winexe -U "'+self.authString+'" '+self.destString+' "dspmq"'
-        #print localCommand
         output = Popen([localCommand],stdout=PIPE,shell=True)
         return output.stdout.readlines()
     
