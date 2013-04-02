@@ -1,85 +1,159 @@
-from Products.ZenModel.DeviceComponent import DeviceComponent
+from Products.ZenModel.OSComponent import OSComponent
+from Products.ZenModel.ZenPackPersistence import ZenPackPersistence
 from Products.ZenModel.ManagedEntity import ManagedEntity
-from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
-from Products.ZenRelations.RelSchema import ToManyCont, ToOne
+from Products.ZenRelations.RelSchema import *
 
+'''
+args:  classname,classname,properties,_properties,relname,sortkey,viewname
+'''
 
-class MQQueue(DeviceComponent, ManagedEntity):
-    """
-    MQComponent is an MQ queue
-    """
-    meta_type = portal_type = "MQQueue"
-
-    queueName = ''
+class MQQueue(OSComponent, ManagedEntity, ZenPackPersistence):
+    '''
+    	basic Component class
+    '''
+    
+    portal_type = meta_type = 'MQQueue'
+    
     queueType = ''
+    queueName = ''
     queueManager = ''
-    queueMaxDepth = 1
-    status = 0
+    queueMaxDepth = ''
 
-    _properties = ManagedEntity._properties + (
-        {'id': 'queueName', 'type': 'string', 'mode': ''},
-        {'id': 'queueType', 'type': 'string', 'mode': ''},
-        {'id': 'queueManager', 'type': 'string', 'mode': ''},
-        {'id': 'queueMaxDepth', 'type': 'int', 'mode': ''},
-        {'id': 'status', 'type':'int', 'mode':''},
+    _properties = (
+    {'id': 'queueType', 'type': 'string','mode': '', 'switch': 'None' },
+    {'id': 'queueName', 'type': 'string','mode': '', 'switch': 'None' },
+    {'id': 'queueManager', 'type': 'string','mode': '', 'switch': 'None' },
+    {'id': 'queueMaxDepth', 'type': 'string','mode': '', 'switch': 'None' },
+
     )
+    
+    _relations = OSComponent._relations + (
+        ('os', ToOne(ToManyCont, 'Products.ZenModel.OperatingSystem', 'mQQueues')),
+        )
 
-    _relations = ManagedEntity._relations + (
-        ('mqDevice', ToOne(ToManyCont,
-            'ZenPacks.community.zenIbmMQ.MQDevice.MQDevice',
-            'mqQueue',
-            ),
-        ),
-        ('mqManager', ToOne(ToManyCont,
-            'ZenPacks.community.zenIbmMQ.MQManager.MQManager',
-            'mqQueue',
-            ),
-        ),           
-    )
-
-    factory_type_information = ({
-        'actions': ({
-            'id': 'perfConf',
-            'name': 'Template',
-            'action': 'objTemplates',
-            'permissions': (ZEN_CHANGE_DEVICE,),
-        },),
-    },)
-    
-    def viewName(self):
-        """ 
-        """
-        return self.queueName
-    
-    titleOrId = name = viewName
-    
-    def primarySortKey(self):
-        """ 
-        """
-        return self.queueName
-            
-    def getStatus(self):
-        """ 
-        """
+    isUserCreatedFlag = True
+    def isUserCreated(self):
+        return self.isUserCreatedFlag
+        
+    def statusMap(self):
         self.status = 0
         return self.status
+    
+    def getStatus(self):
+        return self.statusMap()
+    
+    def primarySortKey(self):
+        return self.id
+    
+    def viewName(self):
+        return self.id
+    
+    name = titleOrId = viewName
 
-    def getMaxDepth(self):
-        """
-        """
-        return float(self.queueMaxDepth)
-    
-    def device(self):
-        """ 
-        """
-        return self.mqDevice()
-    
-    def manage_deleteComponent(self, REQUEST=None):
-        url = None
-        if REQUEST is not None:
-            url = self.device().mqQueues.absolute_url()
-        self.getPrimaryParent()._delObject(self.id)
-        if REQUEST is not None:
-            REQUEST['RESPONSE'].redirect(url)
 
+from Products.ZenModel.OSComponent import OSComponent
+from Products.ZenModel.ZenPackPersistence import ZenPackPersistence
+from Products.ZenModel.ManagedEntity import ManagedEntity
+from Products.ZenRelations.RelSchema import *
+
+'''
+args:  classname,classname,properties,_properties,relname,sortkey,viewname
+'''
+
+class MQQueue(OSComponent, ManagedEntity, ZenPackPersistence):
+    '''
+    	basic Component class
+    '''
     
+    portal_type = meta_type = 'MQQueue'
+    
+    queueType = ''
+    queueName = ''
+    queueManager = ''
+    queueMaxDepth = ''
+
+    _properties = (
+    {'id': 'queueType', 'type': 'string','mode': '', 'switch': 'None' },
+    {'id': 'queueName', 'type': 'string','mode': '', 'switch': 'None' },
+    {'id': 'queueManager', 'type': 'string','mode': '', 'switch': 'None' },
+    {'id': 'queueMaxDepth', 'type': 'string','mode': '', 'switch': 'None' },
+
+    )
+    
+    _relations = OSComponent._relations + (
+        ('os', ToOne(ToManyCont, 'Products.ZenModel.OperatingSystem', 'mQQueues')),
+        )
+
+    isUserCreatedFlag = True
+    def isUserCreated(self):
+        return self.isUserCreatedFlag
+        
+    def statusMap(self):
+        self.status = 0
+        return self.status
+    
+    def getStatus(self):
+        return self.statusMap()
+    
+    def primarySortKey(self):
+        return self.id
+    
+    def viewName(self):
+        return self.id
+    
+    name = titleOrId = viewName
+
+
+from Products.ZenModel.OSComponent import OSComponent
+from Products.ZenModel.ZenPackPersistence import ZenPackPersistence
+from Products.ZenModel.ManagedEntity import ManagedEntity
+from Products.ZenRelations.RelSchema import *
+
+'''
+args:  classname,classname,properties,_properties,relname,sortkey,viewname
+'''
+
+class MQQueue(OSComponent, ManagedEntity, ZenPackPersistence):
+    '''
+    	basic Component class
+    '''
+    
+    portal_type = meta_type = 'MQQueue'
+    
+    queueType = ''
+    queueName = ''
+    queueManager = ''
+    queueMaxDepth = ''
+
+    _properties = (
+    {'id': 'queueType', 'type': 'string','mode': '', 'switch': 'None' },
+    {'id': 'queueName', 'type': 'string','mode': '', 'switch': 'None' },
+    {'id': 'queueManager', 'type': 'string','mode': '', 'switch': 'None' },
+    {'id': 'queueMaxDepth', 'type': 'string','mode': '', 'switch': 'None' },
+
+    )
+    
+    _relations = OSComponent._relations + (
+        ('os', ToOne(ToManyCont, 'Products.ZenModel.OperatingSystem', 'mQQueues')),
+        )
+
+    isUserCreatedFlag = True
+    def isUserCreated(self):
+        return self.isUserCreatedFlag
+        
+    def statusMap(self):
+        self.status = 0
+        return self.status
+    
+    def getStatus(self):
+        return self.statusMap()
+    
+    def primarySortKey(self):
+        return self.id
+    
+    def viewName(self):
+        return self.id
+    
+    name = titleOrId = viewName
+
+

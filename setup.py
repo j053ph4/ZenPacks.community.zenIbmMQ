@@ -3,12 +3,12 @@
 # or saved.  Do not modify them directly here.
 # NB: PACKAGES is deprecated
 NAME = "ZenPacks.community.zenIbmMQ"
-VERSION = "1.0"
+VERSION = "2.0"
 AUTHOR = "Joseph Anderson"
-LICENSE = ""
+LICENSE = "Apache"
 NAMESPACE_PACKAGES = ['ZenPacks', 'ZenPacks.community']
 PACKAGES = ['ZenPacks', 'ZenPacks.community', 'ZenPacks.community.zenIbmMQ']
-INSTALL_REQUIRES = []
+INSTALL_REQUIRES = ['ZenPacks.community.ConstructionKit']
 COMPAT_ZENOSS_VERS = ">=3.0"
 PREV_ZENPACK_NAME = ""
 # STOP_REPLACEMENTS

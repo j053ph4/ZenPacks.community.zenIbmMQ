@@ -1,27 +1,50 @@
-from Products.Zuul.infos.component import ComponentInfo
-from Products.Zuul.infos import ProxyProperty
 from zope.interface import implements
-from ZenPacks.community.zenIbmMQ.interfaces import IMQManagerInfo
-from ZenPacks.community.zenIbmMQ.interfaces import IMQQueueInfo
-from ZenPacks.community.zenIbmMQ.interfaces import IMQChannelInfo
+from Products.Zuul.infos import ProxyProperty
+from Products.Zuul.infos.component import ComponentInfo
+from ZenPacks.community.zenIbmMQ.interfaces import *
+
+'''
+args:  zenpack,compInfo,compInterface,infoProperties
+'''
 
 class MQManagerInfo(ComponentInfo):
-    implements(IMQManagerInfo)
-    managerName = ProxyProperty("managerName")
-    managerStatus = ProxyProperty("managerStatus")
+    implements( IMQManagerInfo )
+    managerStatus = ProxyProperty('managerStatus')
+    managerName = ProxyProperty('managerName')
 
-class MQQueueInfo(ComponentInfo):
-    implements(IMQQueueInfo)
-    queueName = ProxyProperty("queueName")
-    queueType = ProxyProperty("queueType")
-    queueManager = ProxyProperty("queueManager")
-    queueMaxDepth = ProxyProperty("queueMaxDepth")
+
+from zope.interface import implements
+from Products.Zuul.infos import ProxyProperty
+from Products.Zuul.infos.component import ComponentInfo
+from ZenPacks.community.zenIbmMQ.interfaces import *
+
+'''
+args:  zenpack,compInfo,compInterface,infoProperties
+'''
 
 class MQChannelInfo(ComponentInfo):
-    implements(IMQChannelInfo)
-    channelName = ProxyProperty("channelName")
-    channelConn = ProxyProperty("channelConn")
-    channelType = ProxyProperty("channelType")
-    channelStatus = ProxyProperty("channelStatus")
-    channelManager = ProxyProperty("channelManager")
+    implements( IMQChannelInfo )
+    channelManager = ProxyProperty('channelManager')
+    channelType = ProxyProperty('channelType')
+    channelName = ProxyProperty('channelName')
+    channelConn = ProxyProperty('channelConn')
+    channelStatus = ProxyProperty('channelStatus')
+
+
+from zope.interface import implements
+from Products.Zuul.infos import ProxyProperty
+from Products.Zuul.infos.component import ComponentInfo
+from ZenPacks.community.zenIbmMQ.interfaces import *
+
+'''
+args:  zenpack,compInfo,compInterface,infoProperties
+'''
+
+class MQQueueInfo(ComponentInfo):
+    implements( IMQQueueInfo )
+    queueType = ProxyProperty('queueType')
+    queueName = ProxyProperty('queueName')
+    queueManager = ProxyProperty('queueManager')
+    queueMaxDepth = ProxyProperty('queueMaxDepth')
+
 

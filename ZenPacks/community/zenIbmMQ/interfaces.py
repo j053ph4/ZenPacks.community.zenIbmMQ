@@ -1,20 +1,54 @@
-from Products.Zuul.interfaces import IComponentInfo
 from Products.Zuul.form import schema
+from Products.Zuul.interfaces.component import IComponentInfo
+from Products.Zuul.interfaces import IFacade
 from Products.Zuul.utils import ZuulMessageFactory as _t
+from Products.ZenModel.ZVersion import VERSION as ZENOSS_VERSION
+from Products.ZenUtils.Version import Version
+
+if Version.parse('Zenoss ' + ZENOSS_VERSION) >= Version.parse('Zenoss 4'):
+    SingleLineText = schema.TextLine
+    MultiLineText = schema.Text
+else:
+    SingleLineText = schema.Text
+    MultiLineText = schema.TextLine
+
 
 class IMQManagerInfo(IComponentInfo):
-    managerName = schema.Text(title=_t(u"Manager Name"))
-    managerStatus = schema.Text(title=_t(u"Manager State"))
- 
-class IMQQueueInfo(IComponentInfo):
-    queueName = schema.Text(title=_t(u"Queue Name"))
-    queueType = schema.Text(title=_t(u"Queue Type"))
-    queueManager = schema.Text(title=_t(u"Queue Manager"))
-    queueMaxDepth = schema.Int(title=_t(u"Queue Max Depth"))
-    
+    ''''''
+    managerStatus = SingleLineText(title=_t(u'State'))
+    managerName = SingleLineText(title=_t(u'Name'))
+
+
+
 class IMQChannelInfo(IComponentInfo):
-    channelName = schema.Text(title=_t(u"Channel Name"))
-    channelConn = schema.Text(title=_t(u"Channel Connection"))
-    channelType = schema.Text(title=_t(u"Channel Type"))
-    channelStatus = schema.Text(title=_t(u"Channel State"))
-    channelManager = schema.Text(title=_t(u"Channel Manager"))
+    ''''''
+    channelManager = SingleLineText(title=_t(u'Manager'))
+    channelType = SingleLineText(title=_t(u'Type'))
+    channelName = SingleLineText(title=_t(u'Name'))
+    channelConn = SingleLineText(title=_t(u'Connection'))
+    channelStatus = SingleLineText(title=_t(u'State'))
+
+
+
+class IMQQueueInfo(IComponentInfo):
+    ''''''
+    queueType = SingleLineText(title=_t(u'Type'))
+    queueName = SingleLineText(title=_t(u'Name'))
+    queueManager = SingleLineText(title=_t(u'Manager'))
+    queueMaxDepth = SingleLineText(title=_t(u'Max Depth'))
+
+
+
+class IzenIbmMQFacade(IFacade):
+    ''''''
+
+    def addMQManager(self, ob, **kwargs):
+        ''''''
+
+    def addMQChannel(self, ob, **kwargs):
+        ''''''
+
+    def addMQQueue(self, ob, **kwargs):
+        ''''''
+
+

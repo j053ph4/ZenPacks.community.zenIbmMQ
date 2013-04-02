@@ -1,91 +1,165 @@
-from Products.ZenModel.DeviceComponent import DeviceComponent
+from Products.ZenModel.OSComponent import OSComponent
+from Products.ZenModel.ZenPackPersistence import ZenPackPersistence
 from Products.ZenModel.ManagedEntity import ManagedEntity
-from Products.ZenModel.ZenossSecurity import ZEN_CHANGE_DEVICE
-from Products.ZenRelations.RelSchema import ToManyCont, ToOne
+from Products.ZenRelations.RelSchema import *
 
+'''
+args:  classname,classname,properties,_properties,relname,sortkey,viewname
+'''
 
-class MQChannel(DeviceComponent, ManagedEntity):
-    """
-    MQChannel is an MQ channel
-    """
-    meta_type = portal_type = "MQChannel"
-
-    channelName = ''
-    channelConn = ''
+class MQChannel(OSComponent, ManagedEntity, ZenPackPersistence):
+    '''
+    	basic Component class
+    '''
+    
+    portal_type = meta_type = 'MQChannel'
+    
+    channelManager = 'Stopped'
     channelType = ''
-    channelStatus = ''
-    channelManager = ''
-    status = 1
+    channelName = ''
+    channelConn = 'Stopped'
+    channelStatus = 'Stopped'
 
-    _properties = ManagedEntity._properties + (
-        {'id': 'channelName', 'type': 'string', 'mode': ''},
-        {'id': 'channelConn', 'type': 'string', 'mode': ''},
-        {'id': 'channelType', 'type': 'string', 'mode': ''},
-        {'id': 'channelStatus', 'type': 'string', 'mode': ''},
-        {'id': 'channelManager', 'type': 'string', 'mode': ''},
-        {'id': 'status', 'type':'int', 'mode':''},
+    _properties = (
+    {'id': 'channelManager', 'type': 'string','mode': '', 'switch': 'None' },
+    {'id': 'channelType', 'type': 'string','mode': '', 'switch': 'None' },
+    {'id': 'channelName', 'type': 'string','mode': '', 'switch': 'None' },
+    {'id': 'channelConn', 'type': 'string','mode': '', 'switch': 'None' },
+    {'id': 'channelStatus', 'type': 'string','mode': '', 'switch': 'None' },
+
     )
+    
+    _relations = OSComponent._relations + (
+        ('os', ToOne(ToManyCont, 'Products.ZenModel.OperatingSystem', 'mQChannels')),
+        )
 
-    _relations = ManagedEntity._relations + (
-        ('mqDevice', ToOne(ToManyCont,
-            'ZenPacks.community.zenIbmMQ.MQDevice.MQDevice',
-            'mqChannel',
-            ),
-        ),
-        ('mqManager', ToOne(ToManyCont,
-            'ZenPacks.community.zenIbmMQ.MQManager.MQManager',
-            'mqChannel',
-            ),
-        ), 
-    )
-
-    factory_type_information = ({
-        'actions': ({
-            'id': 'perfConf',
-            'name': 'Template',
-            'action': 'objTemplates',
-            'permissions': (ZEN_CHANGE_DEVICE,),
-        },),
-    },)
-    
-    def viewName(self):
-        """ 
-        """
-        return self.channelName
-    
-    titleOrId = name = viewName
-    
-    def primarySortKey(self):
-        """ 
-        """
-        return self.channelName
-            
-    def device(self):
-        """ 
-        """
-        return self.mqDevice()
-    
-    def getStatus(self):
-        """ 
-        """
-        return self.statusMap()
-
+    isUserCreatedFlag = True
+    def isUserCreated(self):
+        return self.isUserCreatedFlag
+        
     def statusMap(self):
-        """ map run state to zenoss status
-        """
-        if self.channelStatus == 'RUNNING':
-            self.status = 0
-        elif self.channelStatus == 'STOPPED':
-            self.status = 2
-        else:
-            self.status = -1
+        self.status = 0
         return self.status
     
-    def manage_deleteComponent(self, REQUEST=None):
-        url = None
-        if REQUEST is not None:
-            url = self.device().mqChannels.absolute_url()
-        self.getPrimaryParent()._delObject(self.id)
-        if REQUEST is not None:
-            REQUEST['RESPONSE'].redirect(url)
+    def getStatus(self):
+        return self.statusMap()
     
+    def primarySortKey(self):
+        return self.id
+    
+    def viewName(self):
+        return self.id
+    
+    name = titleOrId = viewName
+
+
+from Products.ZenModel.OSComponent import OSComponent
+from Products.ZenModel.ZenPackPersistence import ZenPackPersistence
+from Products.ZenModel.ManagedEntity import ManagedEntity
+from Products.ZenRelations.RelSchema import *
+
+'''
+args:  classname,classname,properties,_properties,relname,sortkey,viewname
+'''
+
+class MQChannel(OSComponent, ManagedEntity, ZenPackPersistence):
+    '''
+    	basic Component class
+    '''
+    
+    portal_type = meta_type = 'MQChannel'
+    
+    channelManager = 'Stopped'
+    channelType = ''
+    channelName = ''
+    channelConn = 'Stopped'
+    channelStatus = 'Stopped'
+
+    _properties = (
+    {'id': 'channelManager', 'type': 'string','mode': '', 'switch': 'None' },
+    {'id': 'channelType', 'type': 'string','mode': '', 'switch': 'None' },
+    {'id': 'channelName', 'type': 'string','mode': '', 'switch': 'None' },
+    {'id': 'channelConn', 'type': 'string','mode': '', 'switch': 'None' },
+    {'id': 'channelStatus', 'type': 'string','mode': '', 'switch': 'None' },
+
+    )
+    
+    _relations = OSComponent._relations + (
+        ('os', ToOne(ToManyCont, 'Products.ZenModel.OperatingSystem', 'mQChannels')),
+        )
+
+    isUserCreatedFlag = True
+    def isUserCreated(self):
+        return self.isUserCreatedFlag
+        
+    def statusMap(self):
+        self.status = 0
+        return self.status
+    
+    def getStatus(self):
+        return self.statusMap()
+    
+    def primarySortKey(self):
+        return self.id
+    
+    def viewName(self):
+        return self.id
+    
+    name = titleOrId = viewName
+
+
+from Products.ZenModel.OSComponent import OSComponent
+from Products.ZenModel.ZenPackPersistence import ZenPackPersistence
+from Products.ZenModel.ManagedEntity import ManagedEntity
+from Products.ZenRelations.RelSchema import *
+
+'''
+args:  classname,classname,properties,_properties,relname,sortkey,viewname
+'''
+
+class MQChannel(OSComponent, ManagedEntity, ZenPackPersistence):
+    '''
+    	basic Component class
+    '''
+    
+    portal_type = meta_type = 'MQChannel'
+    
+    channelManager = 'Stopped'
+    channelType = ''
+    channelName = ''
+    channelConn = 'Stopped'
+    channelStatus = 'Stopped'
+
+    _properties = (
+    {'id': 'channelManager', 'type': 'string','mode': '', 'switch': 'None' },
+    {'id': 'channelType', 'type': 'string','mode': '', 'switch': 'None' },
+    {'id': 'channelName', 'type': 'string','mode': '', 'switch': 'None' },
+    {'id': 'channelConn', 'type': 'string','mode': '', 'switch': 'None' },
+    {'id': 'channelStatus', 'type': 'string','mode': '', 'switch': 'None' },
+
+    )
+    
+    _relations = OSComponent._relations + (
+        ('os', ToOne(ToManyCont, 'Products.ZenModel.OperatingSystem', 'mQChannels')),
+        )
+
+    isUserCreatedFlag = True
+    def isUserCreated(self):
+        return self.isUserCreatedFlag
+        
+    def statusMap(self):
+        self.status = 0
+        return self.status
+    
+    def getStatus(self):
+        return self.statusMap()
+    
+    def primarySortKey(self):
+        return self.id
+    
+    def viewName(self):
+        return self.id
+    
+    name = titleOrId = viewName
+
+
