@@ -86,6 +86,10 @@ Change History:
     1.1
         added support for "set monitoring menu option"
         added support for manual component deletion
+    2.0
+	rebuilt using "Construction Kit" ZenPack
+	revised structure of modeler scripts
+	revised RRD templates
 
 Tested: This ZenPack was tested with versions XXX and YYY.
 
