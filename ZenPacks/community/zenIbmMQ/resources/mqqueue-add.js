@@ -1,3 +1,4 @@
+
 (function() {
         
             function getPageContext() {
@@ -21,43 +22,42 @@
                                 labelAlign: 'top',
                                 footerStyle: 'padding-left: 0',
                                 border: false,
-                                items: [
-                {
-                xtype: 'textfield',
-                name: 'queueType',
-                fieldLabel: _t('Type'),
-                id: "queueTypeField",
-                width: 260,
-                allowBlank: false,
-                },
-                
-                {
-                xtype: 'textfield',
-                name: 'queueName',
-                fieldLabel: _t('Name'),
-                id: "queueNameField",
-                width: 260,
-                allowBlank: false,
-                },
-                
-                {
-                xtype: 'textfield',
-                name: 'queueManager',
-                fieldLabel: _t('Manager'),
-                id: "queueManagerField",
-                width: 260,
-                allowBlank: false,
-                },
-                
-                {
-                xtype: 'textfield',
-                name: 'queueMaxDepth',
-                fieldLabel: _t('Max Depth'),
-                id: "queueMaxDepthField",
-                width: 260,
-                allowBlank: false,
-                },
-                ],
+                                items:                         [
+                            {
+                                fieldLabel: 'Manager', 
+                                allowBlank: 'false', 
+                                name: 'queueManager', 
+                                width: 260, 
+                                id: 'queueManagerField', 
+                                xtype: 'textfield'
+                            }, 
+                            {
+                                fieldLabel: 'Max Depth', 
+                                allowBlank: 'false', 
+                                name: 'queueMaxDepth', 
+                                width: 260, 
+                                id: 'queueMaxDepthField', 
+                                xtype: 'textfield'
+                            }, 
+                            {
+                                fieldLabel: 'Name', 
+                                allowBlank: 'false', 
+                                name: 'queueName', 
+                                width: 260, 
+                                id: 'queueNameField', 
+                                xtype: 'textfield'
+                            }, 
+                            {
+                                fieldLabel: 'Type', 
+                                allowBlank: 'false', 
+                                name: 'queueType', 
+                                width: 260, 
+                                id: 'queueTypeField', 
+                                xtype: 'textfield'
+                            }
+                        ]
+
+                                ,
                                 buttons: [{
                                     xtype: 'DialogButton',
                                     id: 'zenIbmMQ-submit',
@@ -74,8 +74,11 @@
                                                     message: response.msg,
                                                     buttons: [{
                                                         xtype: 'DialogButton',
-                                                        text: _t('OK')
-                                                    }]
+                                                        text: _t('OK'),
+                                                        handler: function() { 
+                                                            window.top.location.reload();
+                                                            }
+                                                        }]
                                                 }).show();
                                             }
                                             else {
@@ -83,8 +86,11 @@
                                                     message: response.msg,
                                                     buttons: [{
                                                         xtype: 'DialogButton',
-                                                        text: _t('OK')
-                                                    }]
+                                                        text: _t('OK'),
+                                                        handler: function() { 
+                                                            window.top.location.reload();
+                                                            }
+                                                        }]
                                                 }).show();
                                             }
                                         });

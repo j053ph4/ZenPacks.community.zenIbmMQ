@@ -1,98 +1,137 @@
+
 (function(){
-            var ZC = Ext.ns('Zenoss.component');
-        
-            function render_link(ob) {
-                if (ob && ob.uid) {
-                    return Zenoss.render.link(ob.uid);
-                } else {
-                    return ob;
-                }
-            }
-        
-            ZC.MQChannelPanel = Ext.extend(ZC.ComponentGridPanel, {
-                constructor: function(config) {
-                    config = Ext.applyIf(config||{}, {
-                        componentType: 'MQChannel',
-                        fields: [
-            {name: 'uid'},
-            {name: 'severity'},
-            {name: 'status'},
-            {name: 'name'},{name: 'channelManager'},
-                {name: 'channelType'},
-                {name: 'channelName'},
-                {name: 'channelConn'},
-                {name: 'channelStatus'},
-                
-            {name: 'usesMonitorAttribute'},
-            {name: 'monitor'},
-            {name: 'monitored'},
-            {name: 'locking'},
-            ]
-        ,
-                        columns:[{
-            id: 'severity',
-            dataIndex: 'severity',
-            header: _t('Events'),
-            renderer: Zenoss.render.severity,
-            sortable: true,
-            width: 50
-        },{
-            id: 'name',
-            dataIndex: 'name',
-            header: _t('Name'),
-            sortable: true,
-            width: 70
-        },{
-                    id: 'channelManager',
-                    dataIndex: 'channelManager',
-                    header: _t('Manager'),
-                    sortable: true,
-                    width: 133
-                },{
-                    id: 'channelType',
-                    dataIndex: 'channelType',
-                    header: _t('Type'),
-                    sortable: true,
-                    width: 133
-                },{
-                    id: 'channelName',
-                    dataIndex: 'channelName',
-                    header: _t('Name'),
-                    sortable: true,
-                    width: 133
-                },{
-                    id: 'channelConn',
-                    dataIndex: 'channelConn',
-                    header: _t('Connection'),
-                    sortable: true,
-                    width: 133
-                },{
-                    id: 'channelStatus',
-                    dataIndex: 'channelStatus',
-                    header: _t('State'),
-                    sortable: true,
-                    width: 133
-                },{
-            id: 'monitored',
-            dataIndex: 'monitored',
-            header: _t('Monitored'),
-            sortable: true,
-            width: 65
-        },{
-            id: 'locking',
-            dataIndex: 'locking',
-            header: _t('Locking'),
-            renderer: Zenoss.render.locking_icons,
-            sortable: true,
-            width: 65
-        }]
-                    });
-                    ZC.MQChannelPanel.superclass.constructor.call(this, config);
-                }
+    var ZC = Ext.ns('Zenoss.component');
+
+    function render_link(ob) {
+        if (ob && ob.uid) {
+            return Zenoss.render.link(ob.uid);
+        } else {
+            return ob;
+        }
+    }
+
+    ZC.MQChannelPanel = Ext.extend(ZC.ComponentGridPanel, {
+        constructor: function(config) {
+            config = Ext.applyIf(config||{}, {
+                componentType: 'MQChannel',
+                autoExpandColumn: 'name', 
+                fields:                 [
+                    {
+                        "name": "uid"
+                    }, 
+                    {
+                        "name": "severity"
+                    }, 
+                    {
+                        "name": "status"
+                    }, 
+                    {
+                        "name": "name"
+                    }, 
+                    {
+                        "name": "channelConn"
+                    }, 
+                    {
+                        "name": "channelManager"
+                    }, 
+                    {
+                        "name": "channelName"
+                    }, 
+                    {
+                        "name": "channelStatus"
+                    }, 
+                    {
+                        "name": "channelType"
+                    }, 
+                    {
+                        "name": "usesMonitorAttribute"
+                    }, 
+                    {
+                        "name": "monitor"
+                    }, 
+                    {
+                        "name": "monitored"
+                    }, 
+                    {
+                        "name": "locking"
+                    }
+                ]
+,
+                columns:                [
+                    {
+                        "sortable": "true", 
+                        "width": 50, 
+                        "header": "Events", 
+                        "renderer": Zenoss.render.severity, 
+                        "id": "severity", 
+                        "dataIndex": "severity"
+                    }, 
+                    {
+                        "header": "Name", 
+                        "width": 70, 
+                        "sortable": "true", 
+                        "id": "name", 
+                        "dataIndex": "name"
+                    }, 
+                    {
+                        "header": "Connection", 
+                        "width": 120, 
+                        "sortable": "true", 
+                        "id": "channelConn", 
+                        "dataIndex": "channelConn"
+                    }, 
+                    {
+                        "header": "Manager", 
+                        "width": 120, 
+                        "sortable": "true", 
+                        "id": "channelManager", 
+                        "dataIndex": "channelManager"
+                    }, 
+                    {
+                        "header": "Name", 
+                        "width": 120, 
+                        "sortable": "true", 
+                        "id": "channelName", 
+                        "dataIndex": "channelName"
+                    }, 
+                    {
+                        "header": "State", 
+                        "width": 120, 
+                        "sortable": "true", 
+                        "id": "channelStatus", 
+                        "dataIndex": "channelStatus"
+                    }, 
+                    {
+                        "header": "Type", 
+                        "width": 120, 
+                        "sortable": "true", 
+                        "id": "channelType", 
+                        "dataIndex": "channelType"
+                    }, 
+                    {
+                        "header": "Monitored", 
+                        "width": 65, 
+                        "sortable": "true", 
+                        "id": "monitored", 
+                        "dataIndex": "monitored"
+                    }, 
+                    {
+                        "sortable": "true", 
+                        "width": 65, 
+                        "header": "Locking", 
+                        "renderer": Zenoss.render.locking_icons, 
+                        "id": "locking", 
+                        "dataIndex": "locking"
+                    }
+                ]
+
             });
-            
-            Ext.reg('MQChannelPanel', ZC.MQChannelPanel);
-            ZC.registerName('MQChannel', _t('MQ Channel'), _t('MQ Channels'));
-            
-            })(); 
+            ZC.MQChannelPanel.superclass.constructor.call(this, config);
+        }
+    });
+    
+    Ext.reg('MQChannelPanel', ZC.MQChannelPanel);
+    ZC.registerName('MQChannel', _t('MQ Channel'), _t('MQ Channels'));
+    
+    })();
 

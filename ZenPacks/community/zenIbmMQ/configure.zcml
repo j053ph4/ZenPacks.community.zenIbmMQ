@@ -4,66 +4,36 @@
         xmlns:browser="http://namespaces.zope.org/browser"
         xmlns:zcml="http://namespaces.zope.org/zcml">
         <configure zcml:condition="installed Products.Zuul">
-        
-        	<include package="Products.ZenUtils.extdirect.zope" file="meta.zcml"/>
-        	<!-- Global Info -->
+
+            <include package="Products.ZenUtils.extdirect.zope" file="meta.zcml"/>
+
+
+            <!-- ZenPack Info -->
 
             <browser:directRouter
                 name="zenIbmMQ_router"
                 for="*"
-                class=".routers.zenIbmMQRouter"
+                class="ZenPacks.community.zenIbmMQ.routers.zenIbmMQRouter"
                 namespace="Zenoss.remote"
                 permission="zenoss.View"
             />
     
             <adapter
                 name="zenIbmMQAdapter"
-                provides=".interfaces.IzenIbmMQFacade"
+                provides="ZenPacks.community.zenIbmMQ.interfaces.IzenIbmMQFacade"
                 for="*"
-                factory=".facades.zenIbmMQFacade"
+                factory="ZenPacks.community.zenIbmMQ.facades.zenIbmMQFacade"
             />
                 
             <browser:resourceDirectory
                     name="zenIbmMQ"
                     directory="resources"
             />
-                
-            <!-- Component Info -->
-            <adapter factory=".info.MQManagerInfo"
-                for=".MQManager.MQManager"
-                provides=".interfaces.IMQManagerInfo"
-            />
-    
-            <browser:viewlet
-                name="js-MQManager"
-                paths="/++resource++zenIbmMQ/mqmanager.js"
-                weight="10"
-                manager="Products.ZenUI3.browser.interfaces.IJavaScriptSrcManager"
-                class="Products.ZenUI3.browser.javascript.JavaScriptSrcBundleViewlet"
-                permission="zope2.Public"
-            />
-
 
             <!-- Component Info -->
-            <adapter factory=".info.MQChannelInfo"
-                for=".MQChannel.MQChannel"
-                provides=".interfaces.IMQChannelInfo"
-            />
-    
-            <browser:viewlet
-                name="js-MQChannel"
-                paths="/++resource++zenIbmMQ/mqchannel.js"
-                weight="10"
-                manager="Products.ZenUI3.browser.interfaces.IJavaScriptSrcManager"
-                class="Products.ZenUI3.browser.javascript.JavaScriptSrcBundleViewlet"
-                permission="zope2.Public"
-            />
-
-
-            <!-- Component Info -->
-            <adapter factory=".info.MQQueueInfo"
-                for=".MQQueue.MQQueue"
-                provides=".interfaces.IMQQueueInfo"
+            <adapter factory="ZenPacks.community.zenIbmMQ.info.MQQueueInfo"
+                for="ZenPacks.community.zenIbmMQ.MQQueue.MQQueue"
+                provides="ZenPacks.community.zenIbmMQ.interfaces.IMQQueueInfo"
             />
     
             <browser:viewlet
@@ -75,8 +45,36 @@
                 permission="zope2.Public"
             />
 
+            <!-- Component Info -->
+            <adapter factory="ZenPacks.community.zenIbmMQ.info.MQManagerInfo"
+                for="ZenPacks.community.zenIbmMQ.MQManager.MQManager"
+                provides="ZenPacks.community.zenIbmMQ.interfaces.IMQManagerInfo"
+            />
+    
+            <browser:viewlet
+                name="js-MQManager"
+                paths="/++resource++zenIbmMQ/mqmanager.js"
+                weight="10"
+                manager="Products.ZenUI3.browser.interfaces.IJavaScriptSrcManager"
+                class="Products.ZenUI3.browser.javascript.JavaScriptSrcBundleViewlet"
+                permission="zope2.Public"
+            />
 
-        
+            <!-- Component Info -->
+            <adapter factory="ZenPacks.community.zenIbmMQ.info.MQChannelInfo"
+                for="ZenPacks.community.zenIbmMQ.MQChannel.MQChannel"
+                provides="ZenPacks.community.zenIbmMQ.interfaces.IMQChannelInfo"
+            />
+    
+            <browser:viewlet
+                name="js-MQChannel"
+                paths="/++resource++zenIbmMQ/mqchannel.js"
+                weight="10"
+                manager="Products.ZenUI3.browser.interfaces.IJavaScriptSrcManager"
+                class="Products.ZenUI3.browser.javascript.JavaScriptSrcBundleViewlet"
+                permission="zope2.Public"
+            />
+
         </configure>
     </configure>
 

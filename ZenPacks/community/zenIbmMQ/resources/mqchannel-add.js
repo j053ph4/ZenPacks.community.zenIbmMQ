@@ -1,3 +1,4 @@
+
 (function() {
         
             function getPageContext() {
@@ -21,52 +22,50 @@
                                 labelAlign: 'top',
                                 footerStyle: 'padding-left: 0',
                                 border: false,
-                                items: [
-                {
-                xtype: 'textfield',
-                name: 'channelManager',
-                fieldLabel: _t('Manager'),
-                id: "channelManagerField",
-                width: 260,
-                allowBlank: false,
-                },
-                
-                {
-                xtype: 'textfield',
-                name: 'channelType',
-                fieldLabel: _t('Type'),
-                id: "channelTypeField",
-                width: 260,
-                allowBlank: false,
-                },
-                
-                {
-                xtype: 'textfield',
-                name: 'channelName',
-                fieldLabel: _t('Name'),
-                id: "channelNameField",
-                width: 260,
-                allowBlank: false,
-                },
-                
-                {
-                xtype: 'textfield',
-                name: 'channelConn',
-                fieldLabel: _t('Connection'),
-                id: "channelConnField",
-                width: 260,
-                allowBlank: false,
-                },
-                
-                {
-                xtype: 'textfield',
-                name: 'channelStatus',
-                fieldLabel: _t('State'),
-                id: "channelStatusField",
-                width: 260,
-                allowBlank: false,
-                },
-                ],
+                                items:                         [
+                            {
+                                fieldLabel: 'Connection', 
+                                allowBlank: 'false', 
+                                name: 'channelConn', 
+                                width: 260, 
+                                id: 'channelConnField', 
+                                xtype: 'textfield'
+                            }, 
+                            {
+                                fieldLabel: 'Manager', 
+                                allowBlank: 'false', 
+                                name: 'channelManager', 
+                                width: 260, 
+                                id: 'channelManagerField', 
+                                xtype: 'textfield'
+                            }, 
+                            {
+                                fieldLabel: 'Name', 
+                                allowBlank: 'false', 
+                                name: 'channelName', 
+                                width: 260, 
+                                id: 'channelNameField', 
+                                xtype: 'textfield'
+                            }, 
+                            {
+                                fieldLabel: 'State', 
+                                allowBlank: 'false', 
+                                name: 'channelStatus', 
+                                width: 260, 
+                                id: 'channelStatusField', 
+                                xtype: 'textfield'
+                            }, 
+                            {
+                                fieldLabel: 'Type', 
+                                allowBlank: 'false', 
+                                name: 'channelType', 
+                                width: 260, 
+                                id: 'channelTypeField', 
+                                xtype: 'textfield'
+                            }
+                        ]
+
+                                ,
                                 buttons: [{
                                     xtype: 'DialogButton',
                                     id: 'zenIbmMQ-submit',
@@ -83,8 +82,11 @@
                                                     message: response.msg,
                                                     buttons: [{
                                                         xtype: 'DialogButton',
-                                                        text: _t('OK')
-                                                    }]
+                                                        text: _t('OK'),
+                                                        handler: function() { 
+                                                            window.top.location.reload();
+                                                            }
+                                                        }]
                                                 }).show();
                                             }
                                             else {
@@ -92,8 +94,11 @@
                                                     message: response.msg,
                                                     buttons: [{
                                                         xtype: 'DialogButton',
-                                                        text: _t('OK')
-                                                    }]
+                                                        text: _t('OK'),
+                                                        handler: function() { 
+                                                            window.top.location.reload();
+                                                            }
+                                                        }]
                                                 }).show();
                                             }
                                         });

@@ -1,106 +1,107 @@
+from ZenPacks.community.ConstructionKit.BasicDefinition import *
 from ZenPacks.community.ConstructionKit.Construct import *
-from Products.ZenModel.migrate.Migrate import Version
-import os
 
-ROOT = "ZenPacks.community"
 BASE = "zenIbmMQ"
-VERSION = Version(2, 0, 0)
-ZPROPS = [('zMqRunsOnUnix', True, 'boolean'),
+VERSION = Version(2, 1, 0)
+ZPROPS = [
+          ('zMqRunsOnUnix', True, 'boolean'),
           ('zMqUsername', 'mqm', 'boolean')
           ]
-CWD = os.path.dirname(os.path.realpath(__file__))
 
-class DefinitionManager():
-    """
-    """
-    version = VERSION
-    zenpackroot = ROOT # ZenPack Root
-    zenpackbase = BASE # ZenaPack Name
-    #dictionary of components
-    component = 'MQManager'
-    componentData = {
-                  'singular': 'MQ Manager',
-                  'plural': 'MQ Managers',
-                  'displayed': 'id', # component field in Event Console
-                  'primaryKey': 'id',
-                  'properties': {
-                                 'managerName' : addProperty('Name','Basic','',optional='false'),
-                                 'managerStatus' : addProperty('State','Basic','',optional='false'),
-                                 },
-                  }
-    
-    packZProperties = ZPROPS
-    addManual = False
-    #dictionary of datasources
-    createDS = False
-    provided = False
-    cycleTime = 300
-    timeout = 60
-    cmdFile = None
-    datapoints = []
-    cwd = CWD # ZenPack files directory
-    
-class DefinitionChannel():
-    """
-    """
-    version = VERSION
-    zenpackroot = ROOT # ZenPack Root
-    zenpackbase = BASE # ZenaPack Name
-    #dictionary of components
-    component = 'MQChannel'
-    componentData = {
-                  'singular': 'MQ Channel',
-                  'plural': 'MQ Channels',
-                  'displayed': 'id', # component field in Event Console
-                  'primaryKey': 'id',
-                  'properties': {
-                                 'channelName' : addProperty('Name','Basic','',optional='false'),
-                                 'channelConn' : addProperty('Connection','Basic','Stopped',optional='false'),
-                                 'channelType' : addProperty('Type','Basic','',optional='false'),
-                                 'channelStatus' : addProperty('State','Basic','Stopped',optional='false'),
-                                 'channelManager' : addProperty('Manager','Basic','Stopped',optional='false'),
-                                 },
-                  }
-    
-    packZProperties = ZPROPS
-    addManual = False
-    #dictionary of datasources
-    createDS = False
-    provided = False
-    cycleTime = 300
-    timeout = 60
-    cmdFile = None
-    datapoints = []
-    cwd = CWD # ZenPack files directory
+managerRunStateMap = {
+               4: 'Running',
+               3: 'Online',
+               2: 'Unavailable',
+               1: 'Stopped',
+               0: 'Shutdown',
+               }
 
-class DefinitionQueue():
-    """
-    """
-    version = VERSION
-    zenpackroot = ROOT # ZenPack Root
-    zenpackbase = BASE # ZenaPack Name
-    #dictionary of components
-    component = 'MQQueue'
-    componentData = {
+def getMapValue(ob, datapoint, map):
+    ''' attempt to map number to data dict'''
+    try:
+        value = int(ob.getRRDValue(datapoint))
+        return map[value]
+    except:
+        return 'Unknown'
+    
+def getManagerRunState(ob): return ob.getMapValue('status_runState', ob.managerRunStateMap)
+
+
+DefinitionManager = type('DefinitionManager', (BasicDefinition,),{
+        'version' : Version(2, 1, 0),
+        'zenpackbase': BASE,
+        'packZProperties' : ZPROPS,
+        'component' : 'MQManager',
+        'componentData' : {
+                          'singular': 'MQ Manager',
+                          'plural': 'MQ Managers',
+                          'displayed': 'managerName', # component field in Event Console
+                          'primaryKey': 'managerName',
+                          'properties': {
+                                         'managerName' : addProperty('Name','Basic','',optional=False),
+                                         'managerStatus' : addProperty('State','Basic','',optional=False),
+                                         'eventClass' : addProperty('Event Class','Display Settings','/App/MQ'),
+                                         },
+                          },
+        'componentAttributes' : { 'managerRunStateMap': managerRunStateMap, },
+        'componentMethods' : [getMapValue, getManagerRunState ],                                       
+        }
+)
+
+
+DefinitionChannel = type('DefinitionChannel', (BasicDefinition,), {
+        'version' : Version(2, 1, 0),
+        'zenpackbase': BASE,
+        'packZProperties' : ZPROPS,
+        'component' : 'MQChannel',
+        'componentData' : {
+                          'singular': 'MQ Channel',
+                          'plural': 'MQ Channels',
+                          'displayed': 'id', # component field in Event Console
+                          'primaryKey': 'id',
+                          'properties': {
+                                         'channelName' : addProperty('Name',optional=False),
+                                         'channelConn' : addProperty('Connection','Basic','Stopped',optional=False),
+                                         'channelType' : addProperty('Type','Basic','',optional=False),
+                                         'channelStatus' : addProperty('State','Basic','Stopped',optional=False),
+                                         'channelManager' : addProperty('Manager','Basic','Stopped',optional=False),
+                                         'eventClass' : addProperty('Event Class','Display Settings','/App/MQ'),
+                                         },
+                          },
+        }
+)
+
+addDefinitionSelfComponentRelation(DefinitionChannel,
+                          'mqchannels', ToMany, 'ZenPacks.community.zenIbmMQ.MQChannel','channelManager',
+                          'mqmanager',  ToOne, 'ZenPacks.community.zenIbmMQ.MQManager', 'managerName',
+                          "MQ Manager")
+
+
+
+DefinitionQueue = type('DefinitionQueue', (BasicDefinition,), {
+        'version' : Version(2, 1, 0),
+        'zenpackbase': BASE,
+        'packZProperties' : ZPROPS,
+        'component' : 'MQQueue',
+        'componentData' : {
                   'singular': 'MQ Queue',
                   'plural': 'MQ Queues',
-                  'displayed': 'id', # component field in Event Console
-                  'primaryKey': 'id',
+                  'displayed': 'queueName', # component field in Event Console
+                  'primaryKey': 'queueName',
                   'properties': {
-                                 'queueName' : addProperty('Name','Basic','',optional='false'),
-                                 'queueType' : addProperty('Type','Basic','',optional='false'),
-                                 'queueManager' : addProperty('Manager','Basic','',optional='false'),
-                                 'queueMaxDepth' : addProperty('Max Depth','Basic','',optional='false'),
+                                 'queueName' : addProperty('Name','Basic','',optional=False),
+                                 'queueType' : addProperty('Type','Basic','',optional=False),
+                                 'queueManager' : addProperty('Manager','Basic','',optional=False),
+                                 'queueMaxDepth' : addProperty('Max Depth','Basic','',optional=False),
+                                 'eventClass' : addProperty('Event Class','Display Settings','/App/MQ'),
                                  },
-                  }
-    
-    packZProperties = ZPROPS
-    addManual = False
-    #dictionary of datasources
-    createDS = False
-    provided = False
-    cycleTime = 300
-    timeout = 60
-    cmdFile = None
-    datapoints = []
-    cwd = CWD # ZenPack files directory
+                  },
+        }
+)
+
+addDefinitionSelfComponentRelation(DefinitionQueue,
+                          'mqqueues', ToMany, 'ZenPacks.community.zenIbmMQ.MQQueue','queueManager',
+                          'mqmanager',  ToOne, 'ZenPacks.community.zenIbmMQ.MQManager', 'managerName',
+                          "MQ Manager")
+
+

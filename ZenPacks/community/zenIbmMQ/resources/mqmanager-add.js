@@ -1,3 +1,4 @@
+
 (function() {
         
             function getPageContext() {
@@ -21,25 +22,26 @@
                                 labelAlign: 'top',
                                 footerStyle: 'padding-left: 0',
                                 border: false,
-                                items: [
-                {
-                xtype: 'textfield',
-                name: 'managerStatus',
-                fieldLabel: _t('State'),
-                id: "managerStatusField",
-                width: 260,
-                allowBlank: false,
-                },
-                
-                {
-                xtype: 'textfield',
-                name: 'managerName',
-                fieldLabel: _t('Name'),
-                id: "managerNameField",
-                width: 260,
-                allowBlank: false,
-                },
-                ],
+                                items:                         [
+                            {
+                                fieldLabel: 'Name', 
+                                allowBlank: 'false', 
+                                name: 'managerName', 
+                                width: 260, 
+                                id: 'managerNameField', 
+                                xtype: 'textfield'
+                            }, 
+                            {
+                                fieldLabel: 'State', 
+                                allowBlank: 'false', 
+                                name: 'managerStatus', 
+                                width: 260, 
+                                id: 'managerStatusField', 
+                                xtype: 'textfield'
+                            }
+                        ]
+
+                                ,
                                 buttons: [{
                                     xtype: 'DialogButton',
                                     id: 'zenIbmMQ-submit',
@@ -56,8 +58,11 @@
                                                     message: response.msg,
                                                     buttons: [{
                                                         xtype: 'DialogButton',
-                                                        text: _t('OK')
-                                                    }]
+                                                        text: _t('OK'),
+                                                        handler: function() { 
+                                                            window.top.location.reload();
+                                                            }
+                                                        }]
                                                 }).show();
                                             }
                                             else {
@@ -65,8 +70,11 @@
                                                     message: response.msg,
                                                     buttons: [{
                                                         xtype: 'DialogButton',
-                                                        text: _t('OK')
-                                                    }]
+                                                        text: _t('OK'),
+                                                        handler: function() { 
+                                                            window.top.location.reload();
+                                                            }
+                                                        }]
                                                 }).show();
                                             }
                                         });
