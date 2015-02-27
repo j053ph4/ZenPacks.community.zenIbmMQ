@@ -30,14 +30,6 @@
                                 width: 260, 
                                 id: 'managerNameField', 
                                 xtype: 'textfield'
-                            }, 
-                            {
-                                fieldLabel: 'State', 
-                                allowBlank: 'false', 
-                                name: 'managerStatus', 
-                                width: 260, 
-                                id: 'managerStatusField', 
-                                xtype: 'textfield'
                             }
                         ]
 

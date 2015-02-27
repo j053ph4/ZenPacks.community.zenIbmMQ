@@ -1,8 +1,9 @@
 from ZenPacks.community.ConstructionKit.BasicDefinition import *
 from ZenPacks.community.ConstructionKit.Construct import *
 
+ROOT = "ZenPacks.community"
 BASE = "zenIbmMQ"
-VERSION = Version(2, 1, 0)
+VERSION = Version(2, 5, 0)
 ZPROPS = [
           ('zMqRunsOnUnix', True, 'boolean'),
           ('zMqUsername', 'mqm', 'boolean')
@@ -14,6 +15,7 @@ managerRunStateMap = {
                2: 'Unavailable',
                1: 'Stopped',
                0: 'Shutdown',
+               -1: 'Unknown',
                }
 
 def getMapValue(ob, datapoint, map):
@@ -24,11 +26,11 @@ def getMapValue(ob, datapoint, map):
     except:
         return 'Unknown'
     
-def getManagerRunState(ob): return ob.getMapValue('status_runState', ob.managerRunStateMap)
+def getManagerRunState(ob): return ob.getMapValue('status_status', ob.managerRunStateMap)
 
 
 DefinitionManager = type('DefinitionManager', (BasicDefinition,),{
-        'version' : Version(2, 1, 0),
+        'version' : VERSION,
         'zenpackbase': BASE,
         'packZProperties' : ZPROPS,
         'component' : 'MQManager',
@@ -39,7 +41,8 @@ DefinitionManager = type('DefinitionManager', (BasicDefinition,),{
                           'primaryKey': 'managerName',
                           'properties': {
                                          'managerName' : addProperty('Name','Basic','',optional=False),
-                                         'managerStatus' : addProperty('State','Basic','',optional=False),
+                                         'managerStatus' : addProperty('State','Basic',''),
+                                         'getManagerRunState' : getReferredMethod('Current State', 'getManagerRunState'),
                                          'eventClass' : addProperty('Event Class','Display Settings','/App/MQ'),
                                          },
                           },
@@ -49,10 +52,15 @@ DefinitionManager = type('DefinitionManager', (BasicDefinition,),{
 )
 
 
+addDefinitionSelfComponentRelation(DefinitionManager,
+                          'mqmanager', ToOne, '%s.%s.%s' % (ROOT, BASE, 'MQManager'),'managerName',
+                          'osprocess',  ToOne, 'Products.ZenModel.OSProcess', 'displayName',
+                          'OS Process', 'displayName')
+
+
 DefinitionChannel = type('DefinitionChannel', (BasicDefinition,), {
-        'version' : Version(2, 1, 0),
+        'version' : VERSION,
         'zenpackbase': BASE,
-        'packZProperties' : ZPROPS,
         'component' : 'MQChannel',
         'componentData' : {
                           'singular': 'MQ Channel',
@@ -68,6 +76,7 @@ DefinitionChannel = type('DefinitionChannel', (BasicDefinition,), {
                                          'eventClass' : addProperty('Event Class','Display Settings','/App/MQ'),
                                          },
                           },
+        'componentMethods': [],
         }
 )
 
@@ -77,11 +86,9 @@ addDefinitionSelfComponentRelation(DefinitionChannel,
                           "MQ Manager")
 
 
-
 DefinitionQueue = type('DefinitionQueue', (BasicDefinition,), {
-        'version' : Version(2, 1, 0),
+        'version' : VERSION,
         'zenpackbase': BASE,
-        'packZProperties' : ZPROPS,
         'component' : 'MQQueue',
         'componentData' : {
                   'singular': 'MQ Queue',
@@ -96,6 +103,7 @@ DefinitionQueue = type('DefinitionQueue', (BasicDefinition,), {
                                  'eventClass' : addProperty('Event Class','Display Settings','/App/MQ'),
                                  },
                   },
+        'componentMethods': [],
         }
 )
 
@@ -103,5 +111,4 @@ addDefinitionSelfComponentRelation(DefinitionQueue,
                           'mqqueues', ToMany, 'ZenPacks.community.zenIbmMQ.MQQueue','queueManager',
                           'mqmanager',  ToOne, 'ZenPacks.community.zenIbmMQ.MQManager', 'managerName',
                           "MQ Manager")
-
 

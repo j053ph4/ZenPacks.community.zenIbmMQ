@@ -9,7 +9,11 @@
             return ob;
         }
     }
-
+    
+    function pass_link(ob){ 
+        return ob; 
+    }
+    
     ZC.MQManagerPanel = Ext.extend(ZC.ComponentGridPanel, {
         constructor: function(config) {
             config = Ext.applyIf(config||{}, {
@@ -29,10 +33,13 @@
                         "name": "name"
                     }, 
                     {
-                        "name": "managerName"
+                        "name": "getManagerRunState"
                     }, 
                     {
-                        "name": "managerStatus"
+                        "name": "getOsprocessLink"
+                    }, 
+                    {
+                        "name": "managerName"
                     }, 
                     {
                         "name": "usesMonitorAttribute"
@@ -65,18 +72,28 @@
                         "dataIndex": "name"
                     }, 
                     {
-                        "header": "Name", 
-                        "width": 120, 
                         "sortable": "true", 
-                        "id": "managerName", 
-                        "dataIndex": "managerName"
+                        "width": 120, 
+                        "header": "Current State", 
+                        "renderer": "pass_link", 
+                        "id": "getManagerRunState", 
+                        "dataIndex": "getManagerRunState"
                     }, 
                     {
-                        "header": "State", 
-                        "width": 120, 
                         "sortable": "true", 
-                        "id": "managerStatus", 
-                        "dataIndex": "managerStatus"
+                        "width": 120, 
+                        "header": "OS Process", 
+                        "renderer": "pass_link", 
+                        "id": "getOsprocessLink", 
+                        "dataIndex": "getOsprocessLink"
+                    }, 
+                    {
+                        "sortable": "true", 
+                        "width": 120, 
+                        "header": "Name", 
+                        "renderer": "pass_link", 
+                        "id": "managerName", 
+                        "dataIndex": "managerName"
                     }, 
                     {
                         "header": "Monitored", 

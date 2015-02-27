@@ -9,7 +9,11 @@
             return ob;
         }
     }
-
+    
+    function pass_link(ob){ 
+        return ob; 
+    }
+    
     ZC.MQQueuePanel = Ext.extend(ZC.ComponentGridPanel, {
         constructor: function(config) {
             config = Ext.applyIf(config||{}, {
@@ -27,6 +31,9 @@
                     }, 
                     {
                         "name": "name"
+                    }, 
+                    {
+                        "name": "getMqmanagerLink"
                     }, 
                     {
                         "name": "queueManager"
@@ -71,30 +78,42 @@
                         "dataIndex": "name"
                     }, 
                     {
-                        "header": "Manager", 
-                        "width": 120, 
                         "sortable": "true", 
+                        "width": 120, 
+                        "header": "MQ Manager", 
+                        "renderer": "pass_link", 
+                        "id": "getMqmanagerLink", 
+                        "dataIndex": "getMqmanagerLink"
+                    }, 
+                    {
+                        "sortable": "true", 
+                        "width": 120, 
+                        "header": "Manager", 
+                        "renderer": "pass_link", 
                         "id": "queueManager", 
                         "dataIndex": "queueManager"
                     }, 
                     {
-                        "header": "Max Depth", 
-                        "width": 120, 
                         "sortable": "true", 
+                        "width": 120, 
+                        "header": "Max Depth", 
+                        "renderer": "pass_link", 
                         "id": "queueMaxDepth", 
                         "dataIndex": "queueMaxDepth"
                     }, 
                     {
-                        "header": "Name", 
-                        "width": 120, 
                         "sortable": "true", 
+                        "width": 120, 
+                        "header": "Name", 
+                        "renderer": "pass_link", 
                         "id": "queueName", 
                         "dataIndex": "queueName"
                     }, 
                     {
-                        "header": "Type", 
-                        "width": 120, 
                         "sortable": "true", 
+                        "width": 120, 
+                        "header": "Type", 
+                        "renderer": "pass_link", 
                         "id": "queueType", 
                         "dataIndex": "queueType"
                     }, 

@@ -9,7 +9,11 @@
             return ob;
         }
     }
-
+    
+    function pass_link(ob){ 
+        return ob; 
+    }
+    
     ZC.MQChannelPanel = Ext.extend(ZC.ComponentGridPanel, {
         constructor: function(config) {
             config = Ext.applyIf(config||{}, {
@@ -44,6 +48,9 @@
                         "name": "channelType"
                     }, 
                     {
+                        "name": "getMqmanagerLink"
+                    }, 
+                    {
                         "name": "usesMonitorAttribute"
                     }, 
                     {
@@ -74,39 +81,52 @@
                         "dataIndex": "name"
                     }, 
                     {
-                        "header": "Connection", 
-                        "width": 120, 
                         "sortable": "true", 
+                        "width": 120, 
+                        "header": "Connection", 
+                        "renderer": "pass_link", 
                         "id": "channelConn", 
                         "dataIndex": "channelConn"
                     }, 
                     {
-                        "header": "Manager", 
-                        "width": 120, 
                         "sortable": "true", 
+                        "width": 120, 
+                        "header": "Manager", 
+                        "renderer": "pass_link", 
                         "id": "channelManager", 
                         "dataIndex": "channelManager"
                     }, 
                     {
-                        "header": "Name", 
-                        "width": 120, 
                         "sortable": "true", 
+                        "width": 120, 
+                        "header": "Name", 
+                        "renderer": "pass_link", 
                         "id": "channelName", 
                         "dataIndex": "channelName"
                     }, 
                     {
-                        "header": "State", 
-                        "width": 120, 
                         "sortable": "true", 
+                        "width": 120, 
+                        "header": "State", 
+                        "renderer": "pass_link", 
                         "id": "channelStatus", 
                         "dataIndex": "channelStatus"
                     }, 
                     {
-                        "header": "Type", 
-                        "width": 120, 
                         "sortable": "true", 
+                        "width": 120, 
+                        "header": "Type", 
+                        "renderer": "pass_link", 
                         "id": "channelType", 
                         "dataIndex": "channelType"
+                    }, 
+                    {
+                        "sortable": "true", 
+                        "width": 120, 
+                        "header": "MQ Manager", 
+                        "renderer": "pass_link", 
+                        "id": "getMqmanagerLink", 
+                        "dataIndex": "getMqmanagerLink"
                     }, 
                     {
                         "header": "Monitored", 

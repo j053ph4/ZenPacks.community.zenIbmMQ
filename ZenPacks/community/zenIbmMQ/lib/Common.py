@@ -1,11 +1,8 @@
-#import logging
-#log = logging.getLogger('zen.zenhub')
-
 import re,os
 from Products.ZenUtils.Utils import prepId
 from Products.DataCollector.plugins.CollectorPlugin import *
 from Products.DataCollector.plugins.DataMaps import ObjectMap
-from ZenPacks.community.zenIbmMQ.MQHandler import *
+from ZenPacks.community.zenIbmMQ.lib.MQHandler import *
 from subprocess import *
 
 class MQComponentMap(CommandPlugin):
@@ -26,7 +23,7 @@ class MQComponentMap(CommandPlugin):
         '''
             method used with python transport
         '''
-        #log.debug("collecting for %s" % device.id)
+        log.info("collecting %s for %s." % (self.name(), device.id))
         if str(device.zMqRunsOnUnix) == "True":
             collect = MQCollect('unix')
             collect.connect(device.manageIp, device.zCommandUsername, device.zCommandPassword) 
@@ -34,34 +31,35 @@ class MQComponentMap(CommandPlugin):
             collect = MQCollect('windows')
             collect.connect(device.id, device.zWinUser, device.zWinPassword)
         items = collect.collect('manager')
-        #log.debug('items: %s' % items)
         data = {}
         for item in items:
-            manager = item['QMNAME']
+            try: manager = item['QMNAME']
+            except: continue
             status = item['STATUS']
             #log.debug('found manager: %s status: %s' % (manager,status))
             data[manager] = {'status': status,'items': []}
-            #log.debug(data[manager])
             if self.bundleKey == 'QUEUE': data[manager]['items'] = collect.collect('queue', manager)
             if self.bundleKey == 'CHANNEL': data[manager]['items'] = collect.collect('channel', manager)
             if self.bundleKey == 'QMNAME': 
                 data[manager]['items'] = collect.collect('manager')
                 return data
-        #log.debug("data: %s" % data)
         return data
     
     def process(self, device, results, log):
         """ adds Zenoss components based on given list of dictionaries
         """
-        #log.debug('Collecting MQ components for device %s with results %s' % (device.id,results))
+        log.info("The plugin %s returned %s results." % (self.name(), len(results)))
         common = MQCommon(self.baseid)
         objects = common.parseResults(self.bundleKey,results)
         rm = self.relMap()
-        #log.debug('Found %s components of type %s' %(len(objects),self.bundleKey))
         for o in objects:
             om = self.objectMap(o)
             om.monitor = o['monitor']
-            #log.debug(om)
+            if self.modname == 'MQManager':
+                om.setOsprocess = ''
+            else:
+                om.setMqmanager = o['manager']
+            log.debug(om)
             rm.append(om)
         return rm
     
@@ -150,6 +148,7 @@ class MQCommon():
         name = "%s_%s" % (self.baseid, dataDict['QMNAME'])
         info = {'id' : prepId(name), 'managerName' : dataDict['QMNAME'], 'managerStatus': dataDict['STATUS'],}
         info['monitor'] = self.getStatus(dataDict['STATUS'])
+        info['manager'] = dataDict['QMNAME']
         return info
     
     def QueueInfo(self,manager,dataDict):
@@ -162,16 +161,19 @@ class MQCommon():
             try: info[v] = dataDict[k]
             except: info[v] = ''
         if info['queueType'] == 'QREMOTE': info['monitor'] = False
+        info['manager'] = manager
         return info
     
     def ChannelInfo(self,manager,dataDict):
         """ Map MQ data to component attributes """
         keyMap = {'CHANNEL': 'channelName','CONNAME': 'channelConn', 'CHLTYPE': 'channelType', 'STATUS': 'channelStatus' }
-        name = "%s_%s_%s_%s_%s" % (self.baseid, dataDict['CHANNEL'], manager, dataDict['CONNAME'], dataDict['CHLTYPE'])
+        try: name = "%s_%s_%s_%s_%s" % (self.baseid, dataDict['CHANNEL'], manager, dataDict['CONNAME'], dataDict['CHLTYPE'])
+        except: name = "%s_%s_%s_%s" % (self.baseid, dataDict['CHANNEL'], manager, dataDict['CHLTYPE'])
         name = re.sub('[^A-Za-z0-9]+', '_', name)
         info = {'id':prepId(name), 'channelManager': manager}
         for k,v in keyMap.items():
             try: info[v] = dataDict[k]
             except: info[v] = ''
+        info['manager'] = manager
         return info
 
