@@ -48,16 +48,18 @@ class MQHandler(object):
     def parseData(self, key):
         if len(self.lines) > 0 and len(self.cleanlines) == 0: self.cleanLines()
         self.results = []
-        keyMap = {'QUEUE' : 'AMQ8409', 'CHANNEL' : 'AMQ8414', 'QMNAME' : 'QMNAME'}
+        keyMap = {'QUEUE' : 'AMQ8409', 'CHANNEL' : 'AMQ8414', 'QMNAME' : 'QMNAME', 'VERSION' : 'VERSION'}
         data = {}
-        for i,line in enumerate(self.cleanlines):
-            if keyMap[key] in line:
-                if key is 'QMNAME':
-                    if len(data.keys()) > 0:  self.results.append(data)
-                else:
-                    if len(data.keys()) > 1: self.results.append(data)
-                data = {}
-                if key is not 'QMNAME': continue
+        for line in self.cleanlines:
+            # this part is for getting rid of unwanted data
+            if key in keyMap.keys():
+                if keyMap[key] in line:
+                    if key is 'QMNAME':
+                        if len(data.keys()) > 0:  self.results.append(data)
+                    else:
+                        if len(data.keys()) > 1: self.results.append(data)
+                    data = {}
+                    if key is not 'QMNAME': continue
             if '(' not in line or ')'  not in line:  continue
             if 'Copyright' in line: continue
             data.update(self.getKeyVal(line))

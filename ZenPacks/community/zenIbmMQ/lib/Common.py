@@ -1,7 +1,7 @@
 import re,os
 from Products.ZenUtils.Utils import prepId
 from Products.DataCollector.plugins.CollectorPlugin import *
-from Products.DataCollector.plugins.DataMaps import ObjectMap
+from Products.DataCollector.plugins.DataMaps import ObjectMap, MultiArgs
 from ZenPacks.community.zenIbmMQ.lib.MQHandler import *
 from subprocess import *
 
@@ -33,32 +33,41 @@ class MQComponentMap(CommandPlugin):
         items = collect.collect('manager')
         data = {}
         for item in items:
-            try: manager = item['QMNAME']
-            except: continue
-            status = item['STATUS']
-            #log.debug('found manager: %s status: %s' % (manager,status))
-            data[manager] = {'status': status,'items': []}
-            if self.bundleKey == 'QUEUE': data[manager]['items'] = collect.collect('queue', manager)
-            if self.bundleKey == 'CHANNEL': data[manager]['items'] = collect.collect('channel', manager)
-            if self.bundleKey == 'QMNAME': 
-                data[manager]['items'] = collect.collect('manager')
-                return data
+            if 'QMNAME' in item.keys() and 'STATUS' in item.keys():
+                manager = item['QMNAME']
+                version = self.parseVersion(collect.collect('version', manager))
+                data[manager] = {'status': item['STATUS'],'items': [], 'version': version}
+                if self.bundleKey == 'QUEUE': data[manager]['items'] = collect.collect('queue', manager)
+                if self.bundleKey == 'CHANNEL': data[manager]['items'] = collect.collect('channel', manager)
+                if self.bundleKey == 'QMNAME': 
+                    data[manager]['items'] = collect.collect('manager')
+                    return data
         return data
+    
+    def parseVersion(self, info):
+        '''return a parsed version number'''
+        try:
+            num = info[0]['CMDLEVEL']
+            return '.'.join(list(str(num)))
+        except: return 'Unknown'
     
     def process(self, device, results, log):
         """ adds Zenoss components based on given list of dictionaries
         """
         log.info("The plugin %s returned %s results." % (self.name(), len(results)))
         common = MQCommon(self.baseid)
-        objects = common.parseResults(self.bundleKey,results)
+        objects = common.parseResults(self.bundleKey, results)
         rm = self.relMap()
         for o in objects:
+            version = o['version']
+            o.pop('version')
             om = self.objectMap(o)
             om.monitor = o['monitor']
-            if self.modname == 'MQManager':
-                om.setOsprocess = ''
-            else:
-                om.setMqmanager = o['manager']
+            # if this is a manager, find the associated process
+            if self.modname == 'MQManager':  om.setOsprocess = ''
+            # otherwise, find the assocaited manager
+            else: om.setMqmanager = o['manager']
+            om.setProductKey = MultiArgs('Websphere MQ %s' % version, 'IBM')
             log.debug(om)
             rm.append(om)
         return rm
@@ -90,14 +99,17 @@ class MQCollect():
                             'unix': self.nixcmd % '''/bin/echo DISPLAY CHANNEL\(*\) ALL | su - mqm -c "runmqsc %s"''',
                             'windows': '/usr/bin/printf "DISPLAY CHSTATUS(*) ALL\nEND\n" | %s "runmqsc %s"' % (self.wincmd,"%s")
                             },
+                     'version':{
+                            'key' : 'VERSION',
+                            'unix': self.nixcmd %  '''/bin/echo DISPLAY QMGR CMDLEVEL | su - mqm -c "runmqsc %s"''',
+                            'windows': '/usr/bin/printf "DISPLAY QMGR CMDLEVEL\nEND\n" | %s "runmqsc %s"' % (self.wincmd,"%s")
+                            },
                      }
     
     def collect(self, query, manager=None):
         command = self.commands[query][self.remote]
-        if manager:
-            command = command % manager            
+        if manager:  command = command % manager
         command = command.replace('%%','%')
-        #print "COMMAND: %s" % command
         output = Popen([command],stdout=PIPE,shell=True)
         result = output.stdout.read()
         handler = MQHandler(result.splitlines())
@@ -120,6 +132,7 @@ class MQCommon():
         objects = []
         ignoreKeys = ['SYSTEM', 'COM.IBM.MQ.PCF']
         for manager, data in dataDict.items():
+            version = data['version']
             status = data['status']
             items = data['items']
             for item in items:
@@ -136,10 +149,9 @@ class MQCommon():
                     ob['monitor'] = self.getStatus(status)
                 skip = False
                 for i in ignoreKeys:
-                    if i in name: 
-                        #log.debug("skipping %s" % name)
-                        skip = True
+                    if i in name: skip = True
                 if skip is True: continue
+                ob['version'] = version
                 objects.append(ob)
         return objects
     
